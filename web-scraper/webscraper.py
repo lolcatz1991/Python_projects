@@ -3,14 +3,34 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 
 driver = webdriver.Firefox()
+
+
+element_classes = {
+    "name": "h3",
+    "prize": "price_color"
+}
+
+
+class Book():
+    def __init__(self, name, prize):
+        self.name = name
+        self.prize = prize
+
+
+books = []
+
 driver.get("https://books.toscrape.com/")
-# assert "Python" in driver.title
-# elem = driver.find_element(By.NAME, "q")
-elem = driver.find_element(
-    By.CSS_SELECTOR, "#default > div.container-fluid.page > div > div > div > section > div:nth-child(2) > ol > li:nth-child(1) > article > h3 > a")
-elem.click()
-# elem.clear()
-# elem.send_keys("lolcatz.dk")
-# elem.send_keys(Keys.RETURN)
-# assert "No results found." not in driver.page_source
-# driver.close()
+
+nrOfBooksOnPage = driver.find_elements(By.TAG_NAME, element_classes["name"])
+
+
+for book in nrOfBooksOnPage:
+    book_name = driver.find_element(By.TAG_NAME, element_classes["name"]).text
+    book_prize = driver.find_element(
+        By.CLASS_NAME, element_classes['prize']).text
+    full_book = Book(book_name, book_prize)
+    books.append(full_book)
+driver.close()
+
+print(
+    f"The first book title is {books[0].name} and it costs {books[0].prize}. ")
